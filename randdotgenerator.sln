@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.572
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "randdotgenerator", "randdotgenerator\randdotgenerator.pyproj", "{F5E69B78-0127-4730-95EC-704FC0ACB5C5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F5E69B78-0127-4730-95EC-704FC0ACB5C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5E69B78-0127-4730-95EC-704FC0ACB5C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E1E3AE09-084E-47C1-8745-A2B6C3205054}
+	EndGlobalSection
+EndGlobal
