@@ -7,13 +7,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Create random points
-N = 3000
-x = np.random.rand(N)
-y = np.random.rand(N)
-area = 18
+x = np.random.randint(2, size=(100, 100))
 
-# Plot
-plt.scatter(x, y, s=area, marker='s', edgecolors='none')
+plt.imshow(x, cmap='gray')
 plt.show()
 
