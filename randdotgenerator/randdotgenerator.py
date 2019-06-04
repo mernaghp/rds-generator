@@ -7,8 +7,22 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-x = np.random.randint(2, size=(100, 100))
+x1 = np.random.randint(2, size=(100, 100))
+x2 = x1
 
-plt.imshow(x, cmap='gray')
+# need to figure out how to iterate through a subsection of x2
+# and then "copy" those values to a one-position offset
+
+fig = plt.figure()
+
+ax1 = fig.add_subplot(1, 2, 1)
+ax1.set_axis_off()
+
+ax2 = fig.add_subplot(1, 2, 2)
+ax2.set_axis_off()
+
+img1 = ax1.imshow(x1, cmap='binary')
+img2 = ax2.imshow(x2, cmap='binary')
+
 plt.show()
 
