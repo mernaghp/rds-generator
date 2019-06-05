@@ -21,7 +21,10 @@ ax1.set_axis_off()
 ax2 = fig.add_subplot(1, 2, 2)
 ax2.set_axis_off()
 
+# need to change left cmap to red/white
 img1 = ax1.imshow(x1, cmap='binary')
+
+# need to change right cmap to green/white
 img2 = ax2.imshow(x2, cmap='binary')
 
 plt.show()
