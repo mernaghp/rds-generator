@@ -8,7 +8,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 x1 = np.random.randint(2, size=(100, 100))
-x2 = x1
+x2 = np.copy(x1)
 
 # need to figure out how to iterate through a subsection of x2
 # and then "copy" those values to a one-position offset
