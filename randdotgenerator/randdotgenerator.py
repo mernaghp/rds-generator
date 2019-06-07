@@ -14,10 +14,10 @@ x2 = np.copy(x1)
 fig = plt.figure()
 
 ax1 = fig.add_subplot(1, 2, 1)
-#ax1.set_axis_off()
+ax1.set_axis_off()
 
 ax2 = fig.add_subplot(1, 2, 2)
-#ax2.set_axis_off()
+ax2.set_axis_off()
 
 # make a color map of fixed colors - need to make green more "green"
 cmap1 = colors.ListedColormap(['white', 'red'])
