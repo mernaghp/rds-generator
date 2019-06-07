@@ -6,26 +6,25 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib import colors
 
 x1 = np.random.randint(2, size=(100, 100))
 x2 = np.copy(x1)
 
-# need to figure out how to iterate through a subsection of x2
-# and then "copy" those values to a one-position offset
-
 fig = plt.figure()
 
 ax1 = fig.add_subplot(1, 2, 1)
-ax1.set_axis_off()
+#ax1.set_axis_off()
 
 ax2 = fig.add_subplot(1, 2, 2)
-ax2.set_axis_off()
+#ax2.set_axis_off()
 
-# need to change left cmap to red/white
-img1 = ax1.imshow(x1, cmap='binary')
+# make a color map of fixed colors - need to make green more "green"
+cmap1 = colors.ListedColormap(['white', 'red'])
+cmap2 = colors.ListedColormap(['white', 'green'])
 
-# need to change right cmap to green/white
-img2 = ax2.imshow(x2, cmap='binary')
-
+img1 = ax1.imshow(x1, cmap=cmap1)
+img2 = ax2.imshow(x2, cmap=cmap2)
+    
 plt.show()
 
