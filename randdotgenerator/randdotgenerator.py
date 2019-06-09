@@ -11,20 +11,24 @@ from matplotlib import colors
 x1 = np.random.randint(2, size=(100, 100))
 x2 = np.copy(x1)
 
-fig = plt.figure()
-
-ax1 = fig.add_subplot(1, 2, 1)
-ax1.set_axis_off()
-
-ax2 = fig.add_subplot(1, 2, 2)
-ax2.set_axis_off()
+# will need a loop to randomly choose one of these
+x2[10:30,40:60] = 0 #top
+x2[40:60,70:90] = 0 #right
+x2[70:90,40:60] = 0 #bottom
+x2[40:60,10:30] = 0 #left
 
 # make a color map of fixed colors - need to make green more "green"
 cmap1 = colors.ListedColormap(['white', 'red'])
 cmap2 = colors.ListedColormap(['white', 'green'])
 
-img1 = ax1.imshow(x1, cmap=cmap1)
-img2 = ax2.imshow(x2, cmap=cmap2)
-    
+fig, axs = plt.subplots(1, 2)
+
+im1 = axs[0].imshow(x1, cmap=cmap1)
+axs[0].axis('off')
+
+im2 = axs[1].imshow(x2, cmap=cmap2)
+axs[1].axis('off')
+ 
+plt.subplots_adjust(left=0.02, bottom=0.02, right=0.98, top=0.98, wspace=0.05)
 plt.show()
 
