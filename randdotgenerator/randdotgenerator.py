@@ -29,15 +29,18 @@ else: # right
 cmap1 = colors.ListedColormap(['white', 'red'])
 cmap2 = colors.ListedColormap(['white', 'cyan'])
 
-fig, axs = plt.subplots(1, 2)
+#cmap2._init()
+#alphas = np.linspace(0,0.8,cmap2.N+3)
+#cmap2._lut[:,-1] = alphas
 
-im1 = axs[0].imshow(x1, cmap=cmap1, origin='lower')
-axs[0].axis('off')
+#cmap1._init()
+#alphas2 = np.linspace(0,0.8,cmap1.N+3)
+#cmap1._lut[:,-1] = alphas2
 
-im2 = axs[1].imshow(x2, cmap=cmap2, origin='lower')
-axs[1].axis('off')
- 
-plt.subplots_adjust(left=0.02, bottom=0.02, right=0.98, top=0.98, wspace=0.05)
+im1 = plt.imshow(x1, cmap=cmap1, origin='lower')
+im2 = plt.imshow(x2, cmap=cmap2, origin='lower', alpha=0.5)
+
+plt.axis('off')
 plt.show()
 
 print(quad[quadrant])
