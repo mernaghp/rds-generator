@@ -11,10 +11,10 @@ from matplotlib import colors
 x1 = np.random.randint(2, size=(100, 100))  # 500, 500
 x2 = np.copy(x1)
 
-numrows = len(x1)
+numrows = len(x1)  # you can also use x1.shape, which returns a list I believe
 numcols = len(x1[0])
 
-quad = {1:'bottom', 2:'left', 3:'top', 4:'right'}
+quad = {1:'bottom', 2:'left', 3:'top', 4:'right'}  # you could also use a list e.g., quad = ['bottom', 'left' ...], and then call quad[i + 1]
 
 quadrant = np.random.randint(1,5)
 if quadrant == 1: # bottom
