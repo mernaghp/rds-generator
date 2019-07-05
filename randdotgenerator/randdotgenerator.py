@@ -5,48 +5,20 @@
 # matplotlib will be easy to use to plot the numpy [m, m, 3] array
 
 import numpy as np
-
 import matplotlib.pyplot as plt
 from matplotlib import colors
 
-x1 = np.random.randint(2, size=(100, 100))  # 500, 500
-x2 = np.copy(x1)
-
-numrows = len(x1)  # you can also use x1.shape, which returns a list I believe
-numcols = len(x1[0])
+#numrows = len(x1)  # you can also use x1.shape, which returns a list I believe
+#numcols = len(x1[0])
 
 quad = {1:'bottom', 2:'left', 3:'top', 4:'right'}  # you could also use a list e.g., quad = ['bottom', 'left' ...], and then call quad[i + 1]
-
-quadrant = np.random.randint(1,5)
-if quadrant == 1: # bottom
-    x2[10:40,35:65] = x1[10:40,36:66] # x2[100:200,200:300] = x1[100:200,201:301] 
-elif quadrant == 2: # left
-    x2[35:65,10:40] = x1[35:65,11:41] # x2[200:300,100:200] = x1[200:300,101:201]
-elif quadrant == 3: # top
-    x2[60:90,35:65] = x1[60:90,36:66] # x2[300:400,200:300] = x1[300:400,201:301]
-else: # right
-    x2[35:65,60:90] = x1[35:65,61:91] # x2[200:300,300:400] = x1[200:300,301:401]
 
 cmap1 = colors.ListedColormap(['white', 'red'])
 cmap2 = colors.ListedColormap(['white', 'cyan'])
 
-#cmap2._init()
-#alphas = np.linspace(0,0.8,cmap2.N+3)
-#cmap2._lut[:,-1] = alphas
-
-#cmap1._init()
-#alphas2 = np.linspace(0,0.8,cmap1.N+3)
-#cmap1._lut[:,-1] = alphas2
-
-im1 = plt.imshow(x1, cmap=cmap1, origin='lower')
-im2 = plt.imshow(x2, cmap=cmap2, origin='lower', alpha=0.5)
-
 guesses = []
 
 plt.axis('off')
-plt.show()
-
-print(quad[quadrant])
 
 def on_keyboard(event):
     global guesses
@@ -56,3 +28,29 @@ def on_keyboard(event):
         guesses.append('left')
     elif event.key == 'up':
         guesses.append('top')
+    elif event.key == 'down':
+        guesses.append('bottom')
+    
+    x1 = np.random.randint(2, size=(100, 100))  # 500, 500
+    x2 = np.copy(x1)
+
+    quadrant = np.random.randint(1,5)
+    if quadrant == 1: # bottom
+        x2[10:40,35:65] = x1[10:40,36:66] # x2[100:200,200:300] = x1[100:200,201:301] 
+    elif quadrant == 2: # left
+        x2[35:65,10:40] = x1[35:65,11:41] # x2[200:300,100:200] = x1[200:300,101:201]
+    elif quadrant == 3: # top
+        x2[60:90,35:65] = x1[60:90,36:66] # x2[300:400,200:300] = x1[300:400,201:301]
+    else: # right
+        x2[35:65,60:90] = x1[35:65,61:91] # x2[200:300,300:400] = x1[200:300,301:401]
+
+    im1 = plt.imshow(x1, cmap=cmap1, origin='lower')
+    im2 = plt.imshow(x2, cmap=cmap2, origin='lower', alpha=0.5)
+
+    plt.draw()
+    #print(quad[quadrant])
+
+plt.gcf().canvas.mpl_connect('key_press_event', on_keyboard)
+
+plt.show()
+
