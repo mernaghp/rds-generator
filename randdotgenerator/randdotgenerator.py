@@ -5,6 +5,7 @@
 # matplotlib will be easy to use to plot the numpy [m, m, 3] array
 
 import numpy as np
+
 import matplotlib.pyplot as plt
 from matplotlib import colors
 
@@ -40,7 +41,18 @@ cmap2 = colors.ListedColormap(['white', 'cyan'])
 im1 = plt.imshow(x1, cmap=cmap1, origin='lower')
 im2 = plt.imshow(x2, cmap=cmap2, origin='lower', alpha=0.5)
 
+guesses = []
+
 plt.axis('off')
 plt.show()
 
 print(quad[quadrant])
+
+def on_keyboard(event):
+    global guesses
+    if event.key == 'right':
+        guesses.append('right')
+    elif event.key == 'left':
+        guesses.append('left')
+    elif event.key == 'up':
+        guesses.append('top')
