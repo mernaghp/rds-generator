@@ -19,18 +19,9 @@ cmap2 = colors.ListedColormap(['white', 'cyan'])
 guesses = []
 
 plt.axis('off')
+plt.title("Pat's RDS Generator")
 
-def on_keyboard(event):
-    global guesses
-    if event.key == 'right':
-        guesses.append('right')
-    elif event.key == 'left':
-        guesses.append('left')
-    elif event.key == 'up':
-        guesses.append('top')
-    elif event.key == 'down':
-        guesses.append('bottom')
-    
+def build_RDS():
     x1 = np.random.randint(2, size=(100, 100))  # 500, 500
     x2 = np.copy(x1)
 
@@ -48,8 +39,24 @@ def on_keyboard(event):
     im2 = plt.imshow(x2, cmap=cmap2, origin='lower', alpha=0.5)
 
     plt.draw()
-    #print(quad[quadrant])
+    print(quad[quadrant])
 
+
+def on_keyboard(event):
+    global guesses
+    if event.key == 'right':
+        build_RDS()
+        guesses.append('right')
+    elif event.key == 'left':
+        build_RDS()
+        guesses.append('left')
+    elif event.key == 'up':
+        build_RDS()
+        guesses.append('top')
+    elif event.key == 'down':
+        build_RDS()
+        guesses.append('bottom')
+    
 plt.gcf().canvas.mpl_connect('key_press_event', on_keyboard)
 
 plt.show()
