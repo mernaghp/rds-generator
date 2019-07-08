@@ -18,8 +18,11 @@ cmap2 = colors.ListedColormap(['white', 'cyan'])
 
 guesses = []
 
-plt.axis('off')
 plt.title("Pat's RDS Generator")
+plt.axis('off')
+
+t = 'Press any arrow to continue.'
+plt.text(0.5, 0.5, t, ha='center')
 
 def build_RDS():
     x1 = np.random.randint(2, size=(100, 100))  # 500, 500
@@ -35,9 +38,12 @@ def build_RDS():
     else: # right
         x2[35:65,60:90] = x1[35:65,61:91] # x2[200:300,300:400] = x1[200:300,301:401]
 
+    plt.clf()
+
     im1 = plt.imshow(x1, cmap=cmap1, origin='lower')
     im2 = plt.imshow(x2, cmap=cmap2, origin='lower', alpha=0.5)
 
+    plt.axis('off')
     plt.draw()
     print(quad[quadrant])
 
