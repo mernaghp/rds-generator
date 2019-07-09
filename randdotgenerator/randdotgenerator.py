@@ -1,9 +1,3 @@
-# Suggestions (feel free to ignore)
-# Generating a random image: use numpy to create a square [m, m, 3] RGB color image
-# You can set the quadrant lines by setting pixels to a specific color e.g., [m/2, :, :] = 0, for example
-# You might not even need an image processing library. If you'd really like to read about them though, skimage (scikit) and opencv are good starting points
-# matplotlib will be easy to use to plot the numpy [m, m, 3] array
-
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import colors
@@ -21,7 +15,10 @@ guesses = []
 plt.title("Pat's RDS Generator")
 plt.axis('off')
 
-t = 'Press any arrow to continue.'
+t = ('You should see a square pop out near the top, right, bottom, or left.'
+     '\nUse the arrow keys to denote which quadrant contains this square.'
+     '\n\nPress any arrow to continue.')
+
 plt.text(0.5, 0.5, t, ha='center')
 
 def build_RDS():
@@ -47,23 +44,33 @@ def build_RDS():
     plt.draw()
     print(quad[quadrant])
 
+    guesses.append(quadrant)
+
 
 def on_keyboard(event):
-    global guesses
-    if event.key == 'right':
+    if event.key == 'down':
+        guesses.append(0)
         build_RDS()
-        guesses.append('right')
     elif event.key == 'left':
+        guesses.append(1)
         build_RDS()
-        guesses.append('left')
     elif event.key == 'up':
+        guesses.append(2)
         build_RDS()
-        guesses.append('top')
-    elif event.key == 'down':
+    elif event.key == 'right':
+        guesses.append(3)
         build_RDS()
-        guesses.append('bottom')
+
     
 plt.gcf().canvas.mpl_connect('key_press_event', on_keyboard)
 
+
+def output_results():
+    # there must be a cleaner way to handle that initial arrow
+    # test if guesses isn't empty
+    del guesses[0] # initial arrow press before plot loads
+    print(guesses)
+
 plt.show()
+output_results()
 
