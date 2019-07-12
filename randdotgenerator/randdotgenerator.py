@@ -1,9 +1,15 @@
+# still to do - make size dynamic instead of hardcoded 100 or 500
+# stats window at the end - how many successful guesses
+# increase offset
+# for the moment only perfectly overlay the two plots, but add options for divergence and convergence
+# fix colormap - maybe not needed
+
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import colors
+from matplotlib.widgets import Slider, RadioButtons, Button
 
-#numrows = len(x1)  # you can also use x1.shape, which returns a list I believe
-#numcols = len(x1[0])
+fig, ax = plt.subplots()
 
 quad = ['bottom', 'left', 'top', 'right']
 
@@ -19,10 +25,33 @@ t = ('You should see a square pop out near the top, right, bottom, or left.'
      '\nUse the arrow keys to denote which quadrant contains this square.'
      '\n\nPress any arrow to continue.')
 
-plt.text(0.5, 0.5, t, ha='center')
+plt.text(0.5, 0.8, t, ha='center')
 
-def build_RDS():
-    x1 = np.random.randint(2, size=(100, 100))  # 500, 500
+axcolor = 'lightgoldenrodyellow'
+
+s0 = 100
+delta_s = 1
+
+sizeax = plt.axes([0.1, 0.1, 0.65, 0.03], facecolor=axcolor)
+ssize = Slider(sizeax, 'Size', 50, 500, valinit=s0, valfmt='%0.0f', valstep=delta_s)
+
+def update(val):
+    global s0
+    s0 = int(ssize.val)
+ssize.on_changed(update)
+
+resetax = plt.axes([0.8, 0.025, 0.1, 0.04])
+button = Button(resetax, 'Reset', color=axcolor, hovercolor='0.975')
+
+def reset(event):
+    ssize.reset()
+button.on_clicked(reset)
+
+rax = plt.axes([0.025, 0.5, 0.15, 0.15], facecolor=axcolor)
+radio = RadioButtons(rax, ('red/green', 'red/blue'), active=0)
+       
+def build_RDS(x, y):
+    x1 = np.random.randint(2, size=(x, y))  # 500, 500
     x2 = np.copy(x1)
 
     quadrant = np.random.randint(0,4)
@@ -36,12 +65,13 @@ def build_RDS():
         x2[35:65,60:90] = x1[35:65,61:91] # x2[200:300,300:400] = x1[200:300,301:401]
 
     plt.clf()
+    plt.axis('off')
 
     im1 = plt.imshow(x1, cmap=cmap1, origin='lower')
     im2 = plt.imshow(x2, cmap=cmap2, origin='lower', alpha=0.5)
 
-    plt.axis('off')
-    plt.draw()
+    fig.canvas.draw_idle()
+    #plt.draw()
     print(quad[quadrant])
 
     guesses.append(quadrant)
@@ -50,16 +80,16 @@ def build_RDS():
 def on_keyboard(event):
     if event.key == 'down':
         guesses.append(0)
-        build_RDS()
+        build_RDS(s0, s0)
     elif event.key == 'left':
         guesses.append(1)
-        build_RDS()
+        build_RDS(s0, s0)
     elif event.key == 'up':
         guesses.append(2)
-        build_RDS()
+        build_RDS(s0, s0)
     elif event.key == 'right':
         guesses.append(3)
-        build_RDS()
+        build_RDS(s0, s0)
 
     
 plt.gcf().canvas.mpl_connect('key_press_event', on_keyboard)
@@ -67,9 +97,10 @@ plt.gcf().canvas.mpl_connect('key_press_event', on_keyboard)
 
 def output_results():
     # there must be a cleaner way to handle that initial arrow
-    # test if guesses isn't empty
-    del guesses[0] # initial arrow press before plot loads
-    print(guesses)
+    if guesses:
+        del guesses[0] # initial arrow press before plot loads
+        print(guesses)
+   
 
 plt.show()
 output_results()
