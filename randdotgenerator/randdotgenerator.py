@@ -1,6 +1,4 @@
-# still to do - make size dynamic instead of hardcoded 100 or 500
 # stats window at the end - how many successful guesses
-# increase offset
 # for the moment only perfectly overlay the two plots, but add options for divergence and convergence
 # fix colormap - maybe not needed
 
@@ -12,9 +10,6 @@ from matplotlib.widgets import Slider, RadioButtons, Button
 fig, ax = plt.subplots()
 
 quad = ['bottom', 'left', 'top', 'right']
-
-cmap1 = colors.ListedColormap(['white', 'red'])
-cmap2 = colors.ListedColormap(['white', 'cyan'])
 
 guesses = []
 
@@ -32,46 +27,72 @@ axcolor = 'lightgoldenrodyellow'
 s0 = 100
 delta_s = 1
 
+o0 = 1
+delta_o = 1
+
 sizeax = plt.axes([0.1, 0.1, 0.65, 0.03], facecolor=axcolor)
-ssize = Slider(sizeax, 'Size', 50, 500, valinit=s0, valfmt='%0.0f', valstep=delta_s)
+offsetax = plt.axes([0.1, 0.15, 0.65, 0.03], facecolor=axcolor)
+
+ssize = Slider(sizeax, 'Size', 100, 500, valinit=s0, valfmt='%0.0f', valstep=delta_s)
+soffset = Slider(offsetax, 'Offset', 1, 10, valinit=o0, valfmt='%0.0f', valstep=delta_o)
 
 def update(val):
-    global s0
+    global s0, o0
     s0 = int(ssize.val)
+    o0 = int(soffset.val)
 ssize.on_changed(update)
+soffset.on_changed(update)
 
 resetax = plt.axes([0.8, 0.025, 0.1, 0.04])
 button = Button(resetax, 'Reset', color=axcolor, hovercolor='0.975')
 
 def reset(event):
     ssize.reset()
+    soffset.reset()
 button.on_clicked(reset)
 
+
 rax = plt.axes([0.025, 0.5, 0.15, 0.15], facecolor=axcolor)
-radio = RadioButtons(rax, ('red/green', 'red/blue'), active=0)
-       
-def build_RDS(x, y):
-    x1 = np.random.randint(2, size=(x, y))  # 500, 500
+radio = RadioButtons(rax, ('red/cyan', 'red/blue'), active=0)
+
+# default colors
+color1 = 'red'
+color2 = 'cyan' 
+
+def colorfunc(label):
+     global color1, color2
+     pos = label.find("/")
+     color1 = label[:pos]
+     print(color1)
+     color2 = label[-pos-1:]
+     print(color2)
+radio.on_clicked(colorfunc)
+      
+def build_RDS(x, y, color1, color2, offset):
+    print(offset)
+    x1 = np.random.randint(2, size=(x, y)) 
     x2 = np.copy(x1)
 
-    quadrant = np.random.randint(0,4)
+    quadrant = np.random.randint(0,4) 
     if quadrant == 0: # bottom
-        x2[10:40,35:65] = x1[10:40,36:66] # x2[100:200,200:300] = x1[100:200,201:301] 
+        x2[int(x*.1):int(x*.4),int(y*.35):int(y*.65)] = x1[int(x*.1):int(x*.4),int(y*.35)+offset:int(y*.65)+offset]
     elif quadrant == 1: # left
-        x2[35:65,10:40] = x1[35:65,11:41] # x2[200:300,100:200] = x1[200:300,101:201]
+        x2[int(x*.35):int(x*.65),int(y*.1):int(y*.4)] = x1[int(x*.35):int(x*.65),int(y*.1)+offset:int(y*.4)+offset]
     elif quadrant == 2: # top
-        x2[60:90,35:65] = x1[60:90,36:66] # x2[300:400,200:300] = x1[300:400,201:301]
+        x2[int(x*.6):int(x*.9), int(y*.35):int(y*.65)] = x1[int(x*.6):int(x*.9), int(y*.35)+offset:int(y*.65)+offset]
     else: # right
-        x2[35:65,60:90] = x1[35:65,61:91] # x2[200:300,300:400] = x1[200:300,301:401]
+        x2[int(x*.35):int(x*.65), int(y*.6):int(y*.9)] = x1[int(x*.35):int(x*.65), int(y*.6)+offset:int(y*.9)+offset]
 
     plt.clf()
     plt.axis('off')
+
+    cmap1 = colors.ListedColormap(['white', color1])
+    cmap2 = colors.ListedColormap(['white', color2])
 
     im1 = plt.imshow(x1, cmap=cmap1, origin='lower')
     im2 = plt.imshow(x2, cmap=cmap2, origin='lower', alpha=0.5)
 
     fig.canvas.draw_idle()
-    #plt.draw()
     print(quad[quadrant])
 
     guesses.append(quadrant)
@@ -80,16 +101,16 @@ def build_RDS(x, y):
 def on_keyboard(event):
     if event.key == 'down':
         guesses.append(0)
-        build_RDS(s0, s0)
+        build_RDS(s0, s0, color1, color2, o0)
     elif event.key == 'left':
         guesses.append(1)
-        build_RDS(s0, s0)
+        build_RDS(s0, s0, color1, color2, o0)
     elif event.key == 'up':
         guesses.append(2)
-        build_RDS(s0, s0)
+        build_RDS(s0, s0, color1, color2, o0)
     elif event.key == 'right':
         guesses.append(3)
-        build_RDS(s0, s0)
+        build_RDS(s0, s0, color1, color2, o0)
 
     
 plt.gcf().canvas.mpl_connect('key_press_event', on_keyboard)
