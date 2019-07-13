@@ -40,17 +40,17 @@ def update(val):
     global s0, o0
     s0 = int(ssize.val)
     o0 = int(soffset.val)
+    initial_build_RDS(s0, s0, color1, color2, o0, rdsax)
 ssize.on_changed(update)
 soffset.on_changed(update)
 
-resetax = plt.axes([0.8, 0.025, 0.1, 0.04])
+resetax = plt.axes([0.65, 0.025, 0.1, 0.04])
 button = Button(resetax, 'Reset', color=axcolor, hovercolor='0.975')
 
 def reset(event):
     ssize.reset()
     soffset.reset()
 button.on_clicked(reset)
-
 
 rax = plt.axes([0.025, 0.5, 0.15, 0.15], facecolor=axcolor)
 radio = RadioButtons(rax, ('red/cyan', 'red/blue'), active=0)
@@ -63,13 +63,41 @@ def colorfunc(label):
      global color1, color2
      pos = label.find("/")
      color1 = label[:pos]
-     print(color1)
      color2 = label[-pos-1:]
-     print(color2)
+     initial_build_RDS(s0, s0, color1, color2, o0, rdsax)
 radio.on_clicked(colorfunc)
-      
+     
+def initial_build_RDS(x, y, color1, color2, offset, ax):
+    x1 = np.random.randint(2, size=(x, y)) 
+    x2 = np.copy(x1)
+
+    quadrant = np.random.randint(0,4) 
+    if quadrant == 0: # bottom
+        x2[int(x*.1):int(x*.4),int(y*.35):int(y*.65)] = x1[int(x*.1):int(x*.4),int(y*.35)+offset:int(y*.65)+offset]
+    elif quadrant == 1: # left
+        x2[int(x*.35):int(x*.65),int(y*.1):int(y*.4)] = x1[int(x*.35):int(x*.65),int(y*.1)+offset:int(y*.4)+offset]
+    elif quadrant == 2: # top
+        x2[int(x*.6):int(x*.9), int(y*.35):int(y*.65)] = x1[int(x*.6):int(x*.9), int(y*.35)+offset:int(y*.65)+offset]
+    else: # right
+        x2[int(x*.35):int(x*.65), int(y*.6):int(y*.9)] = x1[int(x*.35):int(x*.65), int(y*.6)+offset:int(y*.9)+offset]
+
+    ax.axis('off')
+
+    cmap1 = colors.ListedColormap(['white', color1])
+    cmap2 = colors.ListedColormap(['white', color2])
+
+    im1 = ax.imshow(x1, cmap=cmap1, origin='lower')
+    im2 = ax.imshow(x2, cmap=cmap2, origin='lower', alpha=0.5)
+
+    fig.canvas.draw_idle()
+    print(quad[quadrant])
+
+    guesses.append(quadrant)
+
+rdsax = plt.axes([0.25, 0.2, 0.5, 0.5])
+initial_build_RDS(s0, s0, color1, color2, o0, rdsax)
+
 def build_RDS(x, y, color1, color2, offset):
-    print(offset)
     x1 = np.random.randint(2, size=(x, y)) 
     x2 = np.copy(x1)
 
