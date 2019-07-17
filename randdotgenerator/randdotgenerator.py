@@ -1,11 +1,16 @@
-# stats window at the end - how many successful guesses
 # for the moment only perfectly overlay the two plots, but add options for divergence and convergence
-# fix colormap - maybe not needed
+# fix colormaps. 
+# ideas - autostereogram
+# random line stereogram
+# fill the blank area after offset with new random dots
+# add another option for how many iterations of RDS to serve up
+# refactor RDS build
 
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import colors
 from matplotlib.widgets import Slider, RadioButtons, Button
+import itertools
 
 fig, ax = plt.subplots()
 
@@ -90,9 +95,7 @@ def initial_build_RDS(x, y, color1, color2, offset, ax):
     im2 = ax.imshow(x2, cmap=cmap2, origin='lower', alpha=0.5)
 
     fig.canvas.draw_idle()
-    print(quad[quadrant])
 
-    guesses.append(quadrant)
 
 rdsax = plt.axes([0.25, 0.2, 0.5, 0.5])
 initial_build_RDS(s0, s0, color1, color2, o0, rdsax)
@@ -143,14 +146,24 @@ def on_keyboard(event):
     
 plt.gcf().canvas.mpl_connect('key_press_event', on_keyboard)
 
+def pairwise(iterable):
+    "s -> (s0, s1), (s2, s3), (s4, s5), ..."
+    a = iter(iterable)
+    return zip(a, a)
 
 def output_results():
     # there must be a cleaner way to handle that initial arrow
     if guesses:
         del guesses[0] # initial arrow press before plot loads
-        print(guesses)
-   
 
+        numright = 0
+        numwrong = 0
+
+        for x, y in pairwise(guesses):
+            numright = numright + (x==y)
+            numwrong = numwrong + (x!=y)
+
+        print('You got {} right out of {}.'.format(numright, numright + numwrong))
 plt.show()
 output_results()
 
