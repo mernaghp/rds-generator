@@ -2,15 +2,18 @@
 # fix colormaps. 
 # ideas - autostereogram
 # random line stereogram
-# fill the blank area after offset with new random dots
+# fill the blank area after offset with new random dots?
 # add another option for how many iterations of RDS to serve up
 # refactor RDS build
+# suppression checks
+# need some sort of algorithm that converges or diverges as you get things right or wrong (?)
 
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import colors
 from matplotlib.widgets import Slider, RadioButtons, Button
 import itertools
+import winsound
 
 fig, ax = plt.subplots()
 
@@ -64,6 +67,9 @@ radio = RadioButtons(rax, ('red/cyan', 'red/blue'), active=0)
 color1 = 'red'
 color2 = 'cyan' 
 
+# default quadrant
+quadrant = 0
+
 def colorfunc(label):
      global color1, color2
      pos = label.find("/")
@@ -73,6 +79,7 @@ def colorfunc(label):
 radio.on_clicked(colorfunc)
      
 def initial_build_RDS(x, y, color1, color2, offset, ax):
+    global quadrant
     x1 = np.random.randint(2, size=(x, y)) 
     x2 = np.copy(x1)
 
@@ -101,6 +108,7 @@ rdsax = plt.axes([0.25, 0.2, 0.5, 0.5])
 initial_build_RDS(s0, s0, color1, color2, o0, rdsax)
 
 def build_RDS(x, y, color1, color2, offset):
+    global quadrant
     x1 = np.random.randint(2, size=(x, y)) 
     x2 = np.copy(x1)
 
@@ -117,6 +125,12 @@ def build_RDS(x, y, color1, color2, offset):
     plt.clf()
     plt.axis('off')
 
+
+    whitespace = np.zeros((x, 0), dtype=int)
+    x1 = np.concatenate((whitespace, x1), axis=1)
+    x2 = np.concatenate((x2, whitespace), axis=1)
+    #converge(x1, x2, 20)
+
     cmap1 = colors.ListedColormap(['white', color1])
     cmap2 = colors.ListedColormap(['white', color2])
 
@@ -128,18 +142,40 @@ def build_RDS(x, y, color1, color2, offset):
 
     guesses.append(quadrant)
 
+def converge(l1, l2, offset):
+    print('converging')
+    whitespace = np.zeros((len(l1), offset),dtype=int)
+    l1 = np.concatenate((l1, whitespace), axis=1)
+    l2 = np.concatenate((whitespace, l2), axis=1)
+    
+
+def diverge(l1, l2, offset):
+    print('diverging')
+    whitespace = np.zeros((len(l1), offset),dtype=int)
+    l1 = np.concatenate((whitespace, l1), axis=1)
+    l2 = np.concatenate((l2, whitespace), axis=1)
+
+def beep_result(guess):
+    if guess == quadrant:
+        winsound.Beep(750, 100)
+    else:
+        winsound.Beep(375, 100)
 
 def on_keyboard(event):
     if event.key == 'down':
+        beep_result(0)
         guesses.append(0)
         build_RDS(s0, s0, color1, color2, o0)
     elif event.key == 'left':
+        beep_result(1)
         guesses.append(1)
         build_RDS(s0, s0, color1, color2, o0)
     elif event.key == 'up':
+        beep_result(2)
         guesses.append(2)
         build_RDS(s0, s0, color1, color2, o0)
     elif event.key == 'right':
+        beep_result(3)
         guesses.append(3)
         build_RDS(s0, s0, color1, color2, o0)
 
@@ -166,4 +202,7 @@ def output_results():
         print('You got {} right out of {}.'.format(numright, numright + numwrong))
 plt.show()
 output_results()
+
+
+
 
